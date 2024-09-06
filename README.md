@@ -121,7 +121,7 @@ Frequencies are scaled to a 0-100 integer interval.
 
 Use these frequencies with downstream tools like the full MeOW suite or visualize results directly using your favorite R tools.
 
-![alt text](https://github.com/mgaleyuw/mini_meow/blob/main/positionMethylation.png?raw=true)
+<img src="https://github.com/mgaleyuw/mini_meow/blob/main/positionMethylation.png?raw=true" width="400">
 
 
 ### Read Average Mode
