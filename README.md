@@ -1,7 +1,9 @@
 # Mini-Meow
 
 A small utility set for ONT data that:
+
      - generates a positions file of CpG locations give a reference fasta file
+
      - pulls average probability of methylation at each site or for each read
 
 ## Installation
@@ -9,9 +11,13 @@ A small utility set for ONT data that:
 This utility relies on bash shell scripts and was designed to run in a Linux environment. It was tested on Ubuntu and RedHat operating systems.
 
 Clone this repository. 
+
 `makePositions` requires Python >= 3.9.0 and the numpy library (>=1.25.0). 
+
 `miniMeow` is used to pull methylation frequencies and requires the following:
+
     - Rust >= 1.72.1
+    
     - Samtools >= 1.17
 
 ## Usage
@@ -19,29 +25,50 @@ Clone this repository.
 Run `makePositions.sh` to generate a CpG positions file given a bed file of regions of interest and a fasta file (with index).
 
 Required flags:
+
     - `-R` : path to a reference fasta file
+
     - `-o` : output path and filename
+
     - `-r` or `-b`
+
         - `-r` : a file containing regions of interest in the format `chrX:12345-2345561`
+
         - `-b` : a bed file of regions of interest
+
+
 Options:
+
     - `-c` : restrict to one chromosome specified here -- significantly speeds things up.
 
 
 Run `miniMeow.sh` using your generated positions file and an aligned and indexed BAM file with methylation calls encoded in MM/ML tags to make either read-average methylation probabilities or position-average methylation probabilties.
 
 Required flags:
+
     - `-b` : path to input BAM file. Must be aligned, position sorted, and indexed.
+
     - `-p` : path to a positions file
+
     - `-o` : output name
+
     - `-m` : CpG methylation model mode. There are two modes for interpreting `5mCG_5hmCG` methylation and one for `5mCG`.
+
         - `5mCG` : use this for data generated using models that predict **only** 5mCG methylation (e.g. dna_r10.4.1_e8.2_400bps_sup@v3.5.2_5mCG@v2)
+
         - `5mCG_5hmCG` : for later models that predict both 5mCG and 5hmCG methylation probabilies and coerce them into the same 0---255 interval (e.g. dna_r10.4.1_e8.2_400bps_sup@v5.0.0_5mCG_5hmCG@v1). 5hmCG probability is split between the probability of a canonical base and the probability of a 5mCG methylated base. This is consistent with how ModKit reports 5mCG methylation frequencies when ignoring 5hmCG.
+
         - `5mCG_5hmCG_merge` : for later models that predict both 5mCG and 5hmCG methylation probabilies and coerce them into the same 0---255 interval. Mini_meow reports the combined probability that a base is methylated with either 5mCG or 5hmCG. This is designed to be more similar to the methylation frequencies detected using bisulfite sequencing, which detects 5hmCG but does not distinguish it from 5mCG methylation.
+
+
 Options:
+
     - `-r` : restricts analysis to only one specified chromosome, speeding things up.
+
     - `-n` : remove positions where no information was reported from results. By default if read depth of primary alignments excluding insertions and deletions is too low to report an average, mini_meow reports 'NA' and keeps the position in results.
+
     - `-R` : use read average mode. This is currently only implemented within one chromosome at a time, so must be run with flag `-r`. Reports the mean methylation probability for all reads rather than all positions. This was designed with `chrM` and numT detection in mind. 
+
 
 Generally speaking, all of these tools will run faster if you sort your bed file, region file, or position input.
 
